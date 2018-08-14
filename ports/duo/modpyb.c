@@ -140,6 +140,8 @@ STATIC const mp_map_elem_t pyb_module_globals_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR_elapsed_millis), (mp_obj_t)&pyb_elapsed_millis_obj }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_micros), (mp_obj_t)&pyb_micros_obj }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_elapsed_micros), (mp_obj_t)&pyb_elapsed_micros_obj }, \
+	{ MP_OBJ_NEW_QSTR(MP_QSTR_delay), MP_ROM_PTR(&time_delay_ms_obj) }, \
+	{ MP_OBJ_NEW_QSTR(MP_QSTR_delayMicroseconds), MP_ROM_PTR(&time_delay_us_obj) }, \
 
     { MP_OBJ_NEW_QSTR(MP_QSTR_Pin), (mp_obj_t)&pin_type }, \
 	{ MP_OBJ_NEW_QSTR(MP_QSTR_Timer), (mp_obj_t)&pyb_timer_type }, \
