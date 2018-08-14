@@ -36,8 +36,6 @@
 #include "py/builtin.h"
 #include "py/runtime.h"
 #include "lib/utils/pyexec.h"
-#include "lib/fatfs/ff.h"
-#include "lib/fatfs/diskio.h"
 #include "pin.h"
 #include "timer.h"
 #include "uart.h"
@@ -142,8 +140,6 @@ STATIC const mp_map_elem_t pyb_module_globals_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR_elapsed_millis), (mp_obj_t)&pyb_elapsed_millis_obj }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_micros), (mp_obj_t)&pyb_micros_obj }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_elapsed_micros), (mp_obj_t)&pyb_elapsed_micros_obj }, \
-	{ MP_OBJ_NEW_QSTR(MP_QSTR_delay), (mp_obj_t)&time_delay_ms_obj }, \
-	{ MP_OBJ_NEW_QSTR(MP_QSTR_delayMicroseconds), (mp_obj_t)&time_delay_us_obj }, \
 
     { MP_OBJ_NEW_QSTR(MP_QSTR_Pin), (mp_obj_t)&pin_type }, \
 	{ MP_OBJ_NEW_QSTR(MP_QSTR_Timer), (mp_obj_t)&pyb_timer_type }, \
@@ -164,6 +160,5 @@ STATIC MP_DEFINE_CONST_DICT(pyb_module_globals, pyb_module_globals_table);
 
 const mp_obj_module_t pyb_module = {
     .base = { &mp_type_module },
-    .name = MP_QSTR_pyb,
     .globals = (mp_obj_dict_t*)&pyb_module_globals,
 };

@@ -291,7 +291,7 @@ STATIC mp_obj_t pyb_wifi_SSID() {
 	const char* ssid = NULL;
 	ssid = wifi_SSID();
 
-    return mp_obj_new_str(ssid, strlen(ssid), true);
+    return mp_obj_new_str(ssid, strlen(ssid));
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(pyb_wifi_SSID_obj, pyb_wifi_SSID);
 
@@ -394,7 +394,7 @@ STATIC mp_obj_t pyb_wifi_resolve(mp_obj_t buf_in, mp_obj_t data_in) {
 
 	printf("%d.%d.%d.%d\n", ip[0], ip[1], ip[2], ip[3]);
 	sprintf(buffer, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-	mp_obj_list_append(data_in,mp_obj_new_str(buffer, strlen(buffer), true));
+	mp_obj_list_append(data_in,mp_obj_new_str(buffer, strlen(buffer)));
 
     return mp_const_none;
 }

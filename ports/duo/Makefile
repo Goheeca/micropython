@@ -185,13 +185,11 @@ LIB_SOURCES = $(addprefix lib/,\
 	libm/sf_erf.c \
 	libm/wf_lgamma.c \
 	libm/wf_tgamma.c \
-	fatfs/ff.c \
 	mp-readline/readline.c \
 	netutils/netutils.c \
 	timeutils/timeutils.c \
 	utils/pyexec.c \
-	utils/pyhelp.c \
-	utils/printf.c \
+	utils/sys_stdio_mphal.c \
 	)
 
 MP_SOURCE = \
@@ -199,7 +197,6 @@ MP_SOURCE = \
     pin.c \
     pin_defs_stmhal.c \
     wiring.c \
-	stmhal/pybstdio.c \
 	modpyb.c \
 	timer.c \
 	uart.c \
