@@ -185,7 +185,8 @@ LIB_SOURCES = $(addprefix lib/,\
 	libm/sf_erf.c \
 	libm/wf_lgamma.c \
 	libm/wf_tgamma.c \
-	fatfs/ff.c \
+	lib/oofatfs/ff.c \
+	lib/oofatfs/option/unicode.c \
 	mp-readline/readline.c \
 	netutils/netutils.c \
 	timeutils/timeutils.c \
