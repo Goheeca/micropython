@@ -32,7 +32,7 @@ endif
 
 
 # Path
-ROOT = ..
+ROOT = ../..
 BUILD = ./build
 RELEASES_PATH = $(BUILD)/releases
 
@@ -40,13 +40,13 @@ CROSS_COMPILE = arm-none-eabi-
 
 TARGET_NAME = $(RELEASES_PATH)/micropython_duo_firmware
 
-include ../py/mkenv.mk
+include $(ROOT)/py/mkenv.mk
 
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h $(BUILD)/pins_qstr.h $(BUILD)/modstm_qstr.h
 
 # include MicroPython make definitions
-include ../py/py.mk
+include $(ROOT)/py/py.mk
 
 HAL_INCLUDE_PATH += \
     libs/CMSIS/Include \
@@ -82,13 +82,13 @@ HAL_INCLUDE_PATH += \
     
 INC += $(addprefix -I,$(HAL_INCLUDE_PATH))
 INC += -I.
-INC += -I..
+INC += -I$(ROOT)
 INC += -Iboards
 INC += -I$(BUILD)
 INC += -I$(BUILD)/genhdr
-INC += -I../lib/mp-readline
-INC += -I../lib/netutils
-INC += -I../lib/timeutils
+INC += -I$(ROOT)/lib/mp-readline
+INC += -I$(ROOT)/lib/netutils
+INC += -I$(ROOT)/lib/timeutils
 
 LINKER_FILE = libs/linker_scripts/gcc/duo/user-part/linker.ld
 
@@ -240,7 +240,7 @@ all: $(TARGET_NAME).bin $(TARGET_NAME).hex
 ifneq ($(FROZEN_DIR),)
 CFLAGS += -DMICROPY_MODULE_FROZEN_STR
 OBJ += $(BUILD)/frozen-files.o
-MAKE_FROZEN = ../tools/make-frozen.py
+MAKE_FROZEN = $(ROOT)/tools/make-frozen.py
 
 $(BUILD)/frozen-files.o: $(BUILD)/frozen-files.c
 	$(call compile_c)
@@ -258,8 +258,8 @@ FROZEN_MPY_MPY_FILES := $(addprefix $(BUILD)/,$(FROZEN_MPY_PY_FILES:.py=.mpy))
 CFLAGS += -DMICROPY_QSTR_EXTRA_POOL=mp_qstr_frozen_const_pool
 CFLAGS += -DMICROPY_MODULE_FROZEN_MPY
 OBJ += $(BUILD)/$(FROZEN_MPY_DIR)/frozen_mpy.o
-MPY_CROSS = ../mpy-cross/mpy-cross
-MPY_TOOL = ../tools/mpy-tool.py
+MPY_CROSS = $(ROOT)/mpy-cross/mpy-cross
+MPY_TOOL = $(ROOT)/tools/mpy-tool.py
 
 $(BUILD)/$(FROZEN_MPY_DIR)/%.mpy: $(FROZEN_MPY_DIR)/%.py
 	@$(ECHO) "MPY $<"
@@ -358,5 +358,5 @@ $(HEADER_BUILD)/%_const.h $(BUILD)/%_qstr.h: $(CMSIS_MCU_HDR) make-stmconst.py |
 	$(Q)$(PYTHON) make-stmconst.py --qstr $(GEN_STMCONST_QSTR) --mpz $(GEN_STMCONST_MPZ) $(CMSIS_MCU_HDR) > $(GEN_STMCONST_HDR)
 
 
-include ../py/mkrules.mk
+include $(ROOT)/py/mkrules.mk
 
