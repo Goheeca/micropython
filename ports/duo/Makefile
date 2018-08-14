@@ -135,7 +135,8 @@ GLOBAL_DEFINES += STM32_DEVICE STM32F2XX PLATFORM_THREADING=1 STM32 USE_STDPERIP
                   SPARK=1  USBD_VID_SPARK=0x2B04 USBD_PID_DFU=0xD058 USBD_PID_CDC=0xC058 \
                   RELEASE_BUILD INCLUDE_PLATFORM=1 USE_STDPERIPH_DRIVER DFU_BUILD_ENABLE \
                   SYSTEM_VERSION_STRING=0.2.3 MODULE_FUNCTION=5 MODULE_INDEX=1 MODULE_VERSION=6 MODULE_DEPENDENCY=4,2,6 \
-                  MODULAR_FIRMWARE=1 USER_FIRMWARE_IMAGE_SIZE=0x40000 USER_FIRMWARE_IMAGE_LOCATION=0x80C0000
+                  MODULAR_FIRMWARE=1 USER_FIRMWARE_IMAGE_SIZE=0x40000 USER_FIRMWARE_IMAGE_LOCATION=0x80C0000 \
+                  FFCONF_H=\"$(ROOT)/lib/oofatfs/ffconf.h\"
 
 ifdef RELEASE
 GLOBAL_DEFINES += NO_ASSERT -DRELEASE
@@ -191,16 +192,14 @@ LIB_SOURCES = $(addprefix lib/,\
 	netutils/netutils.c \
 	timeutils/timeutils.c \
 	utils/pyexec.c \
-	utils/pyhelp.c \
 	utils/printf.c \
 	)
 
 MP_SOURCE = \
-    mphalport.c \
-    pin.c \
-    pin_defs_stmhal.c \
-    wiring.c \
-	stmhal/pybstdio.c \
+	mphalport.c \
+	pin.c \
+	pin_defs_stmhal.c \
+	wiring.c \
 	modpyb.c \
 	timer.c \
 	uart.c \
