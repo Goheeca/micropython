@@ -35,10 +35,14 @@ endif
 ROOT = ../..
 BUILD = ./build
 RELEASES_PATH = $(BUILD)/releases
+FROZEN_DIR ?= scripts
+FROZEN_MPY_DIR ?= modules
 
 CROSS_COMPILE = arm-none-eabi-
 
 TARGET_NAME = $(RELEASES_PATH)/micropython_duo_firmware
+
+MICROPY_FATFS = 1
 
 include $(ROOT)/py/mkenv.mk
 
@@ -193,6 +197,12 @@ LIB_SOURCES = $(addprefix lib/,\
 	utils/sys_stdio_mphal.c \
 	)
 
+ifeq ($(MICROPY_FATFS), 1)
+LIB_SOURCES += \
+	lib/oofatfs/ff.c \
+	lib/oofatfs/option/unicode.c
+endif
+
 MP_SOURCE = \
 	mphalport.c \
 	pin.c \
@@ -200,6 +210,7 @@ MP_SOURCE = \
 	wiring.c \
 	modpyb.c \
 	modspark.c \
+	moduos.c \
 	timer.c \
 	uart.c \
 	spi.c \
@@ -212,7 +223,8 @@ MP_SOURCE = \
 	ble.c \
 	rgb.c \
 	servo.c \
-	time.c  \
+	time.c \
+	fatfs_port.c \
 
 OBJ += $(PY_O)
 OBJ += $(addprefix $(BUILD)/,$(HAL_SOURCES:.c=.o))
@@ -226,7 +238,7 @@ OBJ += $(BUILD)/pins.o
 DEPS_MAKEFILES = ./Makefile
 
 
-CFLAGS += $(OPTIMIZEFLAGS) $(ARCHFLAGS) $(WARNFLAGS) $(DEBUGFLAGS) $(INC) $(addprefix -D,$(GLOBAL_DEFINES))
+CFLAGS += $(OPTIMIZEFLAGS) $(ARCHFLAGS) $(WARNFLAGS) $(DEBUGFLAGS) $(INC) $(addprefix -D,$(GLOBAL_DEFINES)) $(CFLAGS_MOD)
 CFLAGS += -std=gnu99 -nostdlib
 CPPFLAGS += $(filter-out -std=gnu99, $(CFLAGS)) -std=gnu++11
 LDFLAGS += $(OPTIMIZEFLAGS) $(ARCHFLAGS) -T$(LINKER_FILE) -Wl,-Map=$(@:.elf=.map),--cref
@@ -300,7 +312,7 @@ $(TARGET_NAME).bin: $(TARGET_NAME).elf
 	shasum -a 256 $@.no_crc | cut -c 1-65 | xxd -r -p | dd bs=1 of=$@ seek=$$(($(call filesize,$@) - 38)) conv=notrunc  && \
 	head -c $$(($(call filesize,$@) - 4)) $@ > $@.no_crc && \
 	crc32 $@.no_crc | cut -c 1-10 | xxd -r -p | dd bs=1 of=$@ seek=$$(($(call filesize,$@) - 4)) conv=notrunc ;\
-	fi  
+	fi
 
 flash: all
 ifdef RBLINK

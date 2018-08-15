@@ -35,8 +35,8 @@
 #define MICROPY_PY_BUILTINS_HELP    (1)
 #define MICROPY_PY_BUILTINS_HELP_MODULES (1)
 #define MICROPY_MODULE_WEAK_LINKS   (1)
-#define MICROPY_MODULE_FROZEN_STR   (0)
-#define MICROPY_MODULE_FROZEN_MPY   (0)
+//#define MICROPY_MODULE_FROZEN_STR   (0)
+//#define MICROPY_MODULE_FROZEN_MPY   (0)
 
 #define MICROPY_PY_UJSON            (1)
 
@@ -60,6 +60,8 @@
 #define MICROPY_PY_MATH             (1)
 #define MICROPY_PY_CMATH            (1)
 #define MICROPY_PY_IO               (1)
+#define MICROPY_PY_IO_IOBASE        (1)
+#define MICROPY_PY_IO_FILEIO        (1)
 #define MICROPY_PY_STRUCT           (1)
 #define MICROPY_PY_SYS              (1)
 #define MICROPY_PY_SYS_MAXSIZE      (1)
@@ -69,19 +71,29 @@
 #define MICROPY_LONGINT_IMPL        (MICROPY_LONGINT_IMPL_MPZ)
 #define MICROPY_FLOAT_IMPL          (MICROPY_FLOAT_IMPL_FLOAT)
 
+#define MICROPY_VFS                    (1)
+#define MICROPY_FATFS_ENABLE_LFN       (1)
+#define MICROPY_FATFS_RPATH            (2)
+#define MICROPY_FATFS_MAX_SS           (4096)
+#define MICROPY_FATFS_LFN_CODE_PAGE    (437) /* 1=SFN/ANSI 437=LFN/U.S.(OEM) */
+#define MICROPY_VFS_FAT                (1)
+
 #define MICROPY_PY_UBINASCII        (0)
 
 // extra builtin modules to add to the list of known ones
 extern const struct _mp_obj_module_t pyb_module;
 extern const struct _mp_obj_module_t spark_module;
+extern const struct _mp_obj_module_t uos_module;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_OBJ_NEW_QSTR(MP_QSTR_pyb), (mp_obj_t)&pyb_module }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_spark), (mp_obj_t)&spark_module }, \
+    { MP_OBJ_NEW_QSTR(MP_QSTR_uos), (mp_obj_t)&uos_module }, \
 
 // extra constants
 #define MICROPY_PORT_CONSTANTS \
     { MP_OBJ_NEW_QSTR(MP_QSTR_pyb), (mp_obj_t)&pyb_module }, \
+    { MP_OBJ_NEW_QSTR(MP_QSTR_os), (mp_obj_t)&uos_module }, \
 
 
 #define BYTES_PER_WORD (4)
@@ -102,6 +114,14 @@ typedef const void *machine_const_ptr_t; // must be of pointer size
 typedef long mp_off_t;
 
 #define MP_PLAT_PRINT_STRN(str, len) mp_hal_stdout_tx_strn_cooked(str, len)
+
+#define mp_type_fileio mp_type_vfs_fat_fileio
+#define mp_type_textio mp_type_vfs_fat_textio
+
+// use vfs's functions for import stat and builtin open
+#define mp_import_stat mp_vfs_import_stat
+#define mp_builtin_open mp_vfs_open
+#define mp_builtin_open_obj mp_vfs_open_obj
 
 // extra built in names to add to the global namespace
 #define MICROPY_PORT_BUILTINS \
