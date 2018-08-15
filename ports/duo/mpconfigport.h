@@ -5,6 +5,10 @@
 
 // options to control how Micro Python is built
 
+#define MICROPY_OBJ_REPR            (MICROPY_OBJ_REPR_C)
+#define MICROPY_KBD_EXCEPTION       (1)
+#define MICROPY_REPL_AUTO_INDENT    (1)
+
 #define MICROPY_NLR_SETJMP          (1)
 #define MICROPY_QSTR_BYTES_IN_HASH  (1)
 #define MICROPY_ALLOC_PATH_MAX      (256)
@@ -23,7 +27,7 @@
 #define MICROPY_HELPER_REPL         (1)
 #define MICROPY_HELPER_LEXER_UNIX   (0)
 #define MICROPY_ENABLE_SOURCE_LINE  (1)
-#define MICROPY_ENABLE_DOC_STRING   (0)
+#define MICROPY_ENABLE_DOC_STRING   (1)
 #define MICROPY_ERROR_REPORTING     (MICROPY_ERROR_REPORTING_TERSE)
 #define MICROPY_BUILTIN_METHOD_CHECK_SELF_ARG (0)
 #define MICROPY_PY_ASYNC_AWAIT      (1)
@@ -33,6 +37,8 @@
 #define MICROPY_MODULE_WEAK_LINKS   (1)
 #define MICROPY_MODULE_FROZEN_STR   (0)
 #define MICROPY_MODULE_FROZEN_MPY   (0)
+
+#define MICROPY_PY_UJSON            (1)
 
 #define MICROPY_MODULE_FROZEN (1)
 #define MICROPY_PY_BUILTINS_BYTEARRAY (1)
@@ -67,9 +73,11 @@
 
 // extra builtin modules to add to the list of known ones
 extern const struct _mp_obj_module_t pyb_module;
+extern const struct _mp_obj_module_t spark_module;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_OBJ_NEW_QSTR(MP_QSTR_pyb), (mp_obj_t)&pyb_module }, \
+    { MP_OBJ_NEW_QSTR(MP_QSTR_spark), (mp_obj_t)&spark_module }, \
 
 // extra constants
 #define MICROPY_PORT_CONSTANTS \

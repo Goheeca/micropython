@@ -7,6 +7,7 @@
 #define DUO_PORTMODULES_H_
 
 extern const mp_obj_module_t pyb_module;
+extern const mp_obj_module_t spark_module;
 extern const mp_obj_module_t mp_module_utime;
 
 MP_DECLARE_CONST_FUN_OBJ_0(time_delay_ms_obj);
