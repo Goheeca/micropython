@@ -77,6 +77,12 @@ STATIC mp_obj_t sFlash_start(void) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(sFlash_start_obj, sFlash_start);
 
+STATIC mp_obj_t sFlash_sector_size(void) {
+    return MP_OBJ_NEW_SMALL_INT((uint32_t)sFLASH_SECTOR_SIZE);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(sFlash_sector_size_obj, sFlash_sector_size);
+
+
 STATIC const mp_rom_map_elem_t sFlash_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_sFlash) },
 
@@ -85,6 +91,7 @@ STATIC const mp_rom_map_elem_t sFlash_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_erase), MP_ROM_PTR(&sFlash_erase_obj) },
     { MP_ROM_QSTR(MP_QSTR_size), MP_ROM_PTR(&sFlash_size_obj) },
     { MP_ROM_QSTR(MP_QSTR_start), MP_ROM_PTR(&sFlash_start_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sector_size), MP_ROM_PTR(&sFlash_sector_size_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(sFlash_module_globals, sFlash_module_globals_table);
 

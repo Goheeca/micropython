@@ -1,5 +1,6 @@
 #include "flash.h"
 #include "spark_wiring_sflash.h"
+#include "platform_config.h"
 
 void sFLASH_eraseSector(uint32_t SectorAddr) {
 	sFLASH.eraseSector(SectorAddr);
@@ -14,3 +15,4 @@ int sFLASH_selfTest(void) {
 	return sFLASH.selfTest();
 }
 const uint32_t sFLASH_END_ADDRESS = SFLASH_RESERVED_ADDRESS;
+const uint32_t sFLASH_SECTOR_SIZE = sFLASH_PAGESIZE;

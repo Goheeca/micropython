@@ -13,6 +13,7 @@ void sFLASH_readBuffer(uint8_t *pBuffer, uint32_t ReadAddr, uint32_t NumByteToRe
 int sFLASH_selfTest(void);
 
 extern const uint32_t sFLASH_END_ADDRESS;
+extern const uint32_t sFLASH_SECTOR_SIZE;
 
 #ifdef __cplusplus
 }
