@@ -40,11 +40,11 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     }
 }
 
-static char heap[28*1024];
+static char heap[26*1024];
 
 void mp_reset() {
     mp_stack_ctrl_init();
-    mp_stack_set_limit(4*1024);
+    mp_stack_set_limit(6*1024);
 #if MICROPY_ENABLE_GC
     gc_init(heap, heap + sizeof(heap));
 #endif

@@ -2,6 +2,7 @@ import gc
 gc.threshold((gc.mem_free() + gc.mem_alloc()) // 4)
 import uos
 from flashstorage import flashStorage
+from ramstorage import RAMStorage
 
 try:
     if flashStorage:
