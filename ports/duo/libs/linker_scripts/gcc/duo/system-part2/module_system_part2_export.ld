@@ -26,7 +26,7 @@ system_part2_module_table = system_part2_module_info_end;
 
 dynamic_reset_handler_location = system_part2_vtor_table_start + 4;
 
-stack_size = 4096;
+stack_size = 8K;
 
 
 /**
@@ -35,7 +35,7 @@ stack_size = 4096;
 stack_end = 0x20020000;
 stack_start = ALIGN(stack_end - stack_size, 4);
 /** 8K just a guess at how much WICED might need */
-min_heap_size = 16K;
+min_heap_size = 60K;
 
 /*
  * Adjust this as the static RAM needs of this module change.

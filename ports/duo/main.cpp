@@ -7,7 +7,7 @@ SYSTEM_THREAD(ENABLED);
 
 void setup()
 {
-
+  mp_heap();
 }
 
 void loop()
@@ -15,5 +15,3 @@ void loop()
 	mp_setup();
 	mp_loop();
 }
-
-

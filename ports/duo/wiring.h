@@ -25,6 +25,7 @@ extern "C" {
 
 void mp_setup(void);
 void mp_loop(void);
+void mp_heap(void);
 
 
 #ifdef __cplusplus

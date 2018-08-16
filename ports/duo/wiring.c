@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <setjmp.h>
 
 #include "ticks_api.h"
@@ -40,19 +41,30 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     }
 }
 
-static char heap[26*1024];
+#define HEAP_SIZE (30*1024)
+void * heap;
+void mp_heap() {
+  heap = malloc(HEAP_SIZE);
+  if(!heap) {
+    printf("FATAL: couldn't allocate heap of size %u\n", HEAP_SIZE);
+    while(1);
+  }
+}
+//static char heap[26*1024];
 
 void mp_reset() {
     mp_stack_ctrl_init();
-    mp_stack_set_limit(6*1024);
+    mp_stack_set_limit(7*1024);
 #if MICROPY_ENABLE_GC
-    gc_init(heap, heap + sizeof(heap));
+    //gc_init((void*)min_heap_end, (void*)end);
+    //gc_init(heap, heap + sizeof(heap));
+    gc_init(heap, heap + HEAP_SIZE);
 #endif
     mp_init();
     mp_obj_list_init(mp_sys_path, 0);
     mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_)); // current dir (or base dir of the script)
     mp_obj_list_init(mp_sys_argv, 0);
-    readline_init0(); 
+    readline_init0();
     extint_init0();
     TCP_server_init0();
     ble_init0();
@@ -145,5 +157,3 @@ void MP_WEAK __assert_func(const char *file, int line, const char *func, const c
     __fatal_error("Assertion failed");
 }
 #endif
-
-

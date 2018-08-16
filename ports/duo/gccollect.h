@@ -39,15 +39,18 @@ extern uint32_t _heap_start;
 extern uint32_t _heap_end;
 extern uint32_t _estack;
 extern uint32_t _ram_end;*/
+
+extern const uint32_t min_heap_end;
+extern const uint32_t end;
 extern const uint32_t sram_start;
 extern const uint32_t sram_end;
 
-#define STACK_SIZE (8*1024)
+/*#define STACK_SIZE (8*1024)
 #define SENTINEL (1*1024)
 
 #define HEAP_START ((void*) sram_start)
 #define STACK_TOP ((void*) sram_end)
 #define STACK_BOTTOM (STACK_TOP - STACK_SIZE)
-#define HEAP_END (STACK_BOTTOM - SENTINEL)
+#define HEAP_END (STACK_BOTTOM - SENTINEL)*/
 
 #endif // MICROPY_INCLUDED_STM32_GCCOLLECT_H
