@@ -129,9 +129,7 @@ STATIC mp_obj_t pyb_main(mp_uint_t n_args, const mp_obj_t *pos_args, mp_map_t *k
 }
 MP_DEFINE_CONST_FUN_OBJ_KW(pyb_main_obj, 1, pyb_main);
 
-MP_DECLARE_CONST_FUN_OBJ(pyb_main_obj); // defined in main.c
-
-STATIC const mp_map_elem_t pyb_module_globals_table[] = {
+STATIC const mp_rom_map_elem_t pyb_module_globals_table[] = {
 	{ MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_pyb) }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_repl_info), (mp_obj_t)&pyb_set_repl_info_obj }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_main), (mp_obj_t)&pyb_main_obj }, \

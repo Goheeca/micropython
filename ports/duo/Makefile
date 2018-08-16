@@ -127,9 +127,10 @@ LDFLAGS += -Llibs/X_lib
 LDFLAGS += -Wl,--whole-archive -lSTM32F2xx_Peripheral_Libraries -Wl,--no-whole-archive\
            -nostartfiles -Xlinker --gc-sections \
            -Wl,--whole-archive $(LIBS_DEPS) -Wl,--no-whole-archive\
-           -lnosys -Winline\
+           -lnosys \
            -Wl,--defsym,USER_FIRMWARE_IMAGE_SIZE=0x40000 \
            -Wl,--defsym,USER_FIRMWARE_IMAGE_LOCATION=0x80C0000 \
+#          -Winline\
 #           -lstdc++_nano -lm \
 #           -Wl,--start-group -lgcc -lg_nano -lc_nano -Wl,--end-group \
 #           -Wl,--start-group -lgcc -lc_nano -Wl,--end-group

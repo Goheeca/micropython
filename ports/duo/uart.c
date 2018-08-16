@@ -276,6 +276,6 @@ const mp_obj_type_t pyb_uart_type = {
     { &mp_type_type },
     .name = MP_QSTR_UART,
     .make_new = pyb_uart_make_new,
-    .getiter = mp_identity,
+    .getiter = mp_identity_getiter,
     .locals_dict = (mp_obj_t)&pyb_uart_locals_dict,
 };

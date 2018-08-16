@@ -5,6 +5,8 @@
 
 // options to control how Micro Python is built
 
+#define MICROPY_STACK_CHECK         (1)
+
 #define MICROPY_OBJ_REPR            (MICROPY_OBJ_REPR_C)
 #define MICROPY_KBD_EXCEPTION       (1)
 #define MICROPY_REPL_AUTO_INDENT    (1)

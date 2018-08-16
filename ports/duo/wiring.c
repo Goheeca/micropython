@@ -8,9 +8,11 @@
 #include "py/nlr.h"
 #include "py/compile.h"
 #include "py/runtime.h"
+#include "py/stackctrl.h"
 #include "py/repl.h"
 #include "py/gc.h"
 #include "py/mphal.h"
+#include "gccollect.h"
 #include "lib/utils/pyexec.h"
 #include "readline.h"
 #include "wiring.h"
@@ -38,12 +40,11 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     }
 }
 
-//static char *stack_top;
-static char heap[24*1024];
+static char heap[28*1024];
 
 void mp_reset() {
-//    int stack_dummy;
-//    stack_top = (char*)&stack_dummy;
+    mp_stack_ctrl_init();
+    mp_stack_set_limit(4*1024);
 #if MICROPY_ENABLE_GC
     gc_init(heap, heap + sizeof(heap));
 #endif
@@ -87,7 +88,7 @@ void mp_setup() {
 static jmp_buf buf;
 
 void mp_loop() {
-    if(!setjmp(buf)) {
+    if(setjmp(buf)) {
 soft_reset:
         soft_reset();
     }
@@ -114,16 +115,6 @@ soft_reset:
         goto soft_reset;
 }
 
-/*void gc_collect(void) {
-    // WARNING: This gc_collect implementation doesn't try to get root
-    // pointers from CPU registers, and thus may function incorrectly.
-    void *dummy;
-    gc_collect_start();
-    gc_collect_root(&dummy, ((mp_uint_t)stack_top - (mp_uint_t)&dummy) / sizeof(mp_uint_t));
-    gc_collect_end();
-    gc_dump_info();
-}*/
-
 mp_lexer_t *mp_lexer_new_from_file(const char *filename) {
     return NULL;
 }
@@ -137,13 +128,15 @@ mp_obj_t mp_builtin_open(uint n_args, const mp_obj_t *args, mp_map_t *kwargs) {
 }
 MP_DEFINE_CONST_FUN_OBJ_KW(mp_builtin_open_obj, 1, mp_builtin_open);
 
-void nlr_jump_fail(void *val) {
-}
-
 void NORETURN __fatal_error(const char *msg) {
     printf("!!! %s\n", msg);
     longjmp(buf, 1);
-//    while (1);
+}
+
+void nlr_jump_fail(void *val) {
+    printf("FATAL: uncaught exception %p\n", val);
+    mp_obj_print_exception(&mp_plat_print, MP_OBJ_FROM_PTR(val));
+    __fatal_error("Uncaught exception");
 }
 
 #ifndef NDEBUG
