@@ -35,14 +35,14 @@ stack_size = 8K;
 stack_end = 0x20020000;
 stack_start = ALIGN(stack_end - stack_size, 4);
 /** 8K just a guess at how much WICED might need */
-min_heap_size = 60K;
+min_heap_size = 16K;
 
 /*
  * Adjust this as the static RAM needs of this module change.
  * Can be expanded or reduced as necessary. The heap dynamically expands from
  * it's static base to the heap top, which is the bottom of this module's static ram.
  */
-system_static_ram_size = 48K;
+system_static_ram_size = 32K;
 
 /* Place system part2 static RAM immediately below stack. */
 system_static_ram_start = ALIGN( stack_start - system_static_ram_size, 512);
