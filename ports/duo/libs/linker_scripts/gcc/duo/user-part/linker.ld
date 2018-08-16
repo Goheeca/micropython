@@ -6,7 +6,7 @@ MEMORY
 
      /* The SRAM Origin is system_part1_module_ram_end, and extends to
         system_static_ram_start */
-    SRAM      (rwx) : ORIGIN = 0x20000300, LENGTH = 128K - 0x300 - 32K - 8K
+    SRAM      (rwx) : ORIGIN = 0x20000300, LENGTH = 128K - 0x300 - 48K - 8K
     INCLUDE backup_ram_memory.ld
 }
 

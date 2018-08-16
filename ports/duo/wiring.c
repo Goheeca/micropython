@@ -41,7 +41,7 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     }
 }
 
-#define HEAP_SIZE (30*1024)
+#define HEAP_SIZE (26*1024)
 //void * heap;
 void mp_heap() {
   /*heap = malloc(HEAP_SIZE);
