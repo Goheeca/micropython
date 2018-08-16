@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <setjmp.h>
 
 #include "ticks_api.h"
 
@@ -83,11 +84,13 @@ void mp_setup() {
 #endif
 }
 
-static bool pyexec_exit = false;
+static jmp_buf buf;
 
 void mp_loop() {
-    if(!pyexec_exit) {
+    if(!setjmp(buf)) {
 soft_reset:
+        soft_reset();
+    }
 #if MICROPY_REPL_EVENT_DRIVEN
         for (;;) {
             int c = mp_hal_stdin_rx_chr();
@@ -108,10 +111,7 @@ soft_reset:
             }
         }
 #endif
-        soft_reset();
         goto soft_reset;
-    // pyexec_exit = true;
-    }
 }
 
 /*void gc_collect(void) {
@@ -141,7 +141,9 @@ void nlr_jump_fail(void *val) {
 }
 
 void NORETURN __fatal_error(const char *msg) {
-    while (1);
+    printf("!!! %s\n", msg);
+    longjmp(buf, 1);
+//    while (1);
 }
 
 #ifndef NDEBUG
