@@ -2,11 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "ticks_api.h"
+
 #include "py/nlr.h"
 #include "py/compile.h"
 #include "py/runtime.h"
 #include "py/repl.h"
 #include "py/gc.h"
+#include "py/mphal.h"
 #include "lib/utils/pyexec.h"
 #include "readline.h"
 #include "wiring.h"
@@ -34,34 +37,57 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     }
 }
 
-static char *stack_top;
+//static char *stack_top;
 static char heap[16*1024];
 
-void mp_setup() {
-    int stack_dummy;
-    stack_top = (char*)&stack_dummy;
-
+void mp_reset() {
+//    int stack_dummy;
+//    stack_top = (char*)&stack_dummy;
 #if MICROPY_ENABLE_GC
     gc_init(heap, heap + sizeof(heap));
 #endif
-
     mp_init();
+    mp_obj_list_init(mp_sys_path, 0);
+    mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_)); // current dir (or base dir of the script)
+    mp_obj_list_init(mp_sys_argv, 0);
     readline_init0(); 
     extint_init0();
     TCP_server_init0();
     ble_init0();
+#if MICROPY_MODULE_FROZEN
+    pyexec_frozen_module("_boot.py");
+    pyexec_file("boot.py");
+    if (pyexec_mode_kind == PYEXEC_MODE_FRIENDLY_REPL) {
+        pyexec_file("main.py");
+    }
+#endif
+}
 
+void soft_reset(void) {
+    gc_sweep_all();
+    mp_hal_stdout_tx_str("!!! Soft reboot\r\n");
+    delayMicroseconds(10000); // allow UART to flush output
+    mp_deinit();
+    mp_reset();
 #if MICROPY_REPL_EVENT_DRIVEN
     pyexec_event_repl_init();
 #endif
+}
 
+void mp_setup() {
     usbserial_begin(9600);
+    mp_reset();
+    mp_hal_stdout_tx_str("\r\n");
+#if MICROPY_REPL_EVENT_DRIVEN
+    pyexec_event_repl_init();
+#endif
 }
 
 static bool pyexec_exit = false;
 
 void mp_loop() {
     if(!pyexec_exit) {
+soft_reset:
 #if MICROPY_REPL_EVENT_DRIVEN
         for (;;) {
             int c = mp_hal_stdin_rx_chr();
@@ -70,15 +96,25 @@ void mp_loop() {
             }
         }
 #else
-        pyexec_friendly_repl();
+        for (;;) {
+            if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
+                if (pyexec_raw_repl() != 0) {
+                    break;
+                }
+            } else {
+                if (pyexec_friendly_repl() != 0) {
+                    break;
+                }
+            }
+        }
 #endif
-
-        mp_deinit();
-        // pyexec_exit = true;
+        soft_reset();
+        goto soft_reset;
+    // pyexec_exit = true;
     }
 }
 
-void gc_collect(void) {
+/*void gc_collect(void) {
     // WARNING: This gc_collect implementation doesn't try to get root
     // pointers from CPU registers, and thus may function incorrectly.
     void *dummy;
@@ -86,7 +122,7 @@ void gc_collect(void) {
     gc_collect_root(&dummy, ((mp_uint_t)stack_top - (mp_uint_t)&dummy) / sizeof(mp_uint_t));
     gc_collect_end();
     gc_dump_info();
-}
+}*/
 
 mp_lexer_t *mp_lexer_new_from_file(const char *filename) {
     return NULL;

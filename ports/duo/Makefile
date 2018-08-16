@@ -225,8 +225,13 @@ MP_SOURCE = \
 	servo.c \
 	time.c \
 	fatfs_port.c \
+	gccollect.c \
+
+SRC_O = \
+	gchelper_m0.o
 
 OBJ += $(PY_O)
+OBJ += $(addprefix $(BUILD)/, $(SRC_O))
 OBJ += $(addprefix $(BUILD)/,$(HAL_SOURCES:.c=.o))
 OBJ += $(addprefix $(BUILD)/,$(HAL_CPPSOURCES:.cpp=.cpp.o))
 OBJ += $(addprefix $(BUILD)/,$(LIB_SOURCES:.c=.o))
