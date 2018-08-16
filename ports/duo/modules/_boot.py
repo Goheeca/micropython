@@ -2,19 +2,18 @@ import gc
 gc.threshold((gc.mem_free() + gc.mem_alloc()) // 4)
 import uos
 from flashstorage import flashStorage
-#from pyb import RGB
 
-#RGB.control(True)
-#RGB.color([0,255,0])
 try:
     if flashStorage:
-	#RGB.color([255,0,0])
         uos.mount(flashStorage, '/')
-	#RGB.color([0,0,255])
 except OSError:
-    import inisetup
-    #RGB.color([255,255,0])
-    inisetup.setup()
-    #RGB.color([0,255,255])
+    print("Performing initial setup")
+    uos.VfsFat.mkfs(flashStorage)
+    vfs = uos.VfsFat(flashStorage)
+    uos.mount(vfs, '/')
+    with open("boot.py", "w") as f:
+        f.write("""\
+# This file is executed on every boot (including wake-boot from deepsleep)
+""")
 
 gc.collect()
