@@ -26,7 +26,7 @@ system_part2_module_table = system_part2_module_info_end;
 
 dynamic_reset_handler_location = system_part2_vtor_table_start + 4;
 
-stack_size = 8K;
+stack_size = 32K;
 
 
 /**

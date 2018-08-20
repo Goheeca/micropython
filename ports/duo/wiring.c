@@ -41,7 +41,7 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     }
 }
 
-#define HEAP_SIZE (26*1024)
+#define HEAP_SIZE (16*1024)
 //void * heap;
 void mp_heap() {
   /*heap = malloc(HEAP_SIZE);
@@ -54,7 +54,7 @@ static char heap[HEAP_SIZE];
 
 void mp_reset() {
     mp_stack_ctrl_init();
-    mp_stack_set_limit(7*1024);
+    mp_stack_set_limit(16*1024);
 #if MICROPY_ENABLE_GC
     //gc_init((void*)min_heap_end, (void*)end);
     gc_init(heap, heap + sizeof(heap));
