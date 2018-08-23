@@ -4,28 +4,31 @@ class FlashStorage:
 
     SEC_SIZE = spark.sFlash.sector_size()
     START_SEC = spark.sFlash.start() // SEC_SIZE
-    NUM_BLK = spark.sFlash.size() // SEC_SIZE + 1
+    NUM_BLK = spark.sFlash.size() // SEC_SIZE #+ 1
 
     def __init__(self, blocks=NUM_BLK):
         self.blocks = blocks
 
     def readblocks(self, n, buf):
         #print("readblocks(%s, %x(%d))" % (n, id(buf), len(buf)))
-        if n == 0:
-            buf2 = bytearray(self.SEC_SIZE)
-            self.mk_fake_mbr(buf2)
-            buf[:] = buf2
-        else:
-            spark.sFlash.read((n - 1 + self.START_SEC) * self.SEC_SIZE, buf)
+        #if n == 0:
+        #    buf2 = bytearray(self.SEC_SIZE)
+        #    self.mk_fake_mbr(buf2)
+        #    buf[:] = buf2
+        #else:
+        #    spark.sFlash.read((n - 1 + self.START_SEC) * self.SEC_SIZE, buf)
+        spark.sFlash.read((n + self.START_SEC) * self.SEC_SIZE, buf)
 
     def writeblocks(self, n, buf):
         #print("writeblocks(%s, %x(%d))" % (n, id(buf), len(buf)))
         #assert len(buf) <= self.SEC_SIZE, len(buf)
-        if n == 0:
-            pass # Nothing we won't change first sector with MBR
-        else:
-            spark.sFlash.erase(n - 1 + self.START_SEC)
-            spark.sFlash.write((n - 1 + self.START_SEC) * self.SEC_SIZE, buf)
+        #if n == 0:
+        #    pass # Nothing we won't change first sector with MBR
+        #else:
+        #    spark.sFlash.erase(n - 1 + self.START_SEC)
+        #    spark.sFlash.write((n - 1 + self.START_SEC) * self.SEC_SIZE, buf)
+        spark.sFlash.erase(n + self.START_SEC)
+        spark.sFlash.write((n + self.START_SEC) * self.SEC_SIZE, buf)
 
     def ioctl(self, op, arg):
         #print("ioctl(%d, %r)" % (op, arg))

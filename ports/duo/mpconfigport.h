@@ -81,6 +81,7 @@
 #define MICROPY_FATFS_LFN_CODE_PAGE    (437) /* 1=SFN/ANSI 437=LFN/U.S.(OEM) */
 #define MICROPY_VFS_FAT                (1)
 #define MICROPY_VFS_FAT_HEAP_BUFFER    (1)
+#define MICROPY_FATFS_MULTI_PARTITION  (0)
 
 #define MICROPY_PY_UBINASCII        (0)
 

@@ -123,7 +123,7 @@ STATIC mp_obj_t fat_vfs_mkfs(mp_obj_t bdev_in) {
 #else
     uint8_t working_buf[_MAX_SS];
 #endif
-    FRESULT res = f_mkfs(&vfs->fatfs, FM_FAT | FM_SFD, 0, working_buf, sizeof(working_buf));
+    FRESULT res = f_mkfs(&vfs->fatfs, FM_FAT | FM_SFD, 0, working_buf, _MAX_SS);
 #if MICROPY_VFS_FAT_HEAP_BUFFER
     free(working_buf);
 #endif
@@ -405,7 +405,7 @@ STATIC mp_obj_t vfs_fat_mount(mp_obj_t self_in, mp_obj_t readonly, mp_obj_t mkfs
 #else
         uint8_t working_buf[_MAX_SS];
 #endif
-        res = f_mkfs(&self->fatfs, FM_FAT | FM_SFD, 0, working_buf, sizeof(working_buf));
+        res = f_mkfs(&self->fatfs, FM_FAT | FM_SFD, 0, working_buf, _MAX_SS);
 #if MICROPY_VFS_FAT_HEAP_BUFFER
         free(working_buf);
 #endif
