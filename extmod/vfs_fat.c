@@ -39,6 +39,10 @@
 #include "extmod/vfs_fat.h"
 #include "lib/timeutils/timeutils.h"
 
+#if MICROPY_VFS_FAT_HEAP_BUFFER
+#include <stdlib.h>
+#endif
+
 #if _MAX_SS == _MIN_SS
 #define SECSIZE(fs) (_MIN_SS)
 #else
@@ -111,8 +115,18 @@ STATIC mp_obj_t fat_vfs_mkfs(mp_obj_t bdev_in) {
     fs_user_mount_t *vfs = MP_OBJ_TO_PTR(fat_vfs_make_new(&mp_fat_vfs_type, 1, 0, &bdev_in));
 
     // make the filesystem
+#if MICROPY_VFS_FAT_HEAP_BUFFER
+    uint8_t *working_buf = (uint8_t*) malloc(_MAX_SS);
+    if (!working_buf) {
+        mp_raise_OSError(fresult_to_errno_table[12]); // ENOMEM
+    }
+#else
     uint8_t working_buf[_MAX_SS];
+#endif
     FRESULT res = f_mkfs(&vfs->fatfs, FM_FAT | FM_SFD, 0, working_buf, sizeof(working_buf));
+#if MICROPY_VFS_FAT_HEAP_BUFFER
+    free(working_buf);
+#endif
     if (res != FR_OK) {
         mp_raise_OSError(fresult_to_errno_table[res]);
     }
@@ -383,8 +397,18 @@ STATIC mp_obj_t vfs_fat_mount(mp_obj_t self_in, mp_obj_t readonly, mp_obj_t mkfs
     // check if we need to make the filesystem
     FRESULT res = (self->flags & FSUSER_NO_FILESYSTEM) ? FR_NO_FILESYSTEM : FR_OK;
     if (res == FR_NO_FILESYSTEM && mp_obj_is_true(mkfs)) {
+#if MICROPY_VFS_FAT_HEAP_BUFFER
+        uint8_t *working_buf = (uint8_t*) malloc(_MAX_SS);
+        if (!working_buf) {
+            mp_raise_OSError(fresult_to_errno_table[12]); // ENOMEM
+        }
+#else
         uint8_t working_buf[_MAX_SS];
+#endif
         res = f_mkfs(&self->fatfs, FM_FAT | FM_SFD, 0, working_buf, sizeof(working_buf));
+#if MICROPY_VFS_FAT_HEAP_BUFFER
+        free(working_buf);
+#endif
     }
     if (res != FR_OK) {
         mp_raise_OSError(fresult_to_errno_table[res]);

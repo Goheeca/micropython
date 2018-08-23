@@ -54,7 +54,7 @@ static char heap[HEAP_SIZE];
 
 void mp_reset() {
     mp_stack_ctrl_init();
-    mp_stack_set_limit(16*1024);
+    mp_stack_set_limit(3*1024);
 #if MICROPY_ENABLE_GC
     //gc_init((void*)min_heap_end, (void*)end);
     gc_init(heap, heap + sizeof(heap));
