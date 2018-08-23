@@ -27,7 +27,7 @@ class FlashStorage:
         #else:
         #    spark.sFlash.erase(n - 1 + self.START_SEC)
         #    spark.sFlash.write((n - 1 + self.START_SEC) * self.SEC_SIZE, buf)
-        spark.sFlash.erase(n + self.START_SEC)
+        spark.sFlash.erase((n + self.START_SEC) * self.SEC_SIZE)
         spark.sFlash.write((n + self.START_SEC) * self.SEC_SIZE, buf)
 
     def ioctl(self, op, arg):
