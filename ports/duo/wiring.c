@@ -148,6 +148,16 @@ MP_DEFINE_CONST_FUN_OBJ_KW(mp_builtin_open_obj, 1, mp_builtin_open);
 
 #endif
 
+STATIC void stderr_print_strn(void *env, const char *str, size_t len) {
+    (void)env;
+    //ssize_t dummy = write(STDERR_FILENO, str, len);
+    //mp_uos_dupterm_tx_strn(str, len);
+    mp_hal_stdout_tx_strn(str, len);
+    //(void)dummy;
+}
+
+const mp_print_t mp_stderr_print = {NULL, stderr_print_strn};
+
 void NORETURN __fatal_error(const char *msg) {
     printf("!!! %s\n", msg);
     longjmp(buf, 1);
