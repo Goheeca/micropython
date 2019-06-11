@@ -13,6 +13,7 @@
 #include "py/repl.h"
 #include "py/gc.h"
 #include "py/mphal.h"
+#include "py/builtin.h"
 #include "gccollect.h"
 #include "lib/utils/pyexec.h"
 #include "readline.h"
@@ -20,6 +21,9 @@
 #include "extint.h"
 #include "TCP_server.h"
 #include "ble.h"
+
+static mp_obj_t result = MP_OBJ_NULL;
+const qstr UNDERSCORE = MP_QSTR__;
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     mp_lexer_t *lex = mp_lexer_new_from_str_len(MP_QSTR__lt_stdin_gt_, src, strlen(src), 0);
@@ -33,7 +37,10 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
         qstr source_name = lex->source_name;
         mp_parse_tree_t parse_tree = mp_parse(lex, input_kind);
         mp_obj_t module_fun = mp_compile(&parse_tree, source_name, MP_EMIT_OPT_NONE, true);
-        mp_call_function_0(module_fun);
+        result = mp_call_function_0(module_fun);
+        if (result != MP_OBJ_NULL) {
+            mp_module_builtins.base.type->attr(MP_OBJ_FROM_PTR(&mp_module_builtins), UNDERSCORE, &result);
+        }
         nlr_pop();
     } else {
         // uncaught exception

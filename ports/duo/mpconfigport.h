@@ -5,6 +5,8 @@
 
 // options to control how Micro Python is built
 
+#define MICROPY_CAN_OVERRIDE_BUILTINS (1)
+
 #define MICROPY_STACK_CHECK         (1)
 #define MICROPY_ENABLE_PYSTACK      (0)
 #define MICROPY_ENABLE_EMERGENCY_EXCEPTION_BUF   (1)

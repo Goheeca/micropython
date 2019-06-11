@@ -22,3 +22,5 @@ except OSError:
 """)
 
 gc.collect()
+
+del flashStorage, uos, gc
