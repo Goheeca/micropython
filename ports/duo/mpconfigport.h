@@ -16,6 +16,7 @@
 #define MICROPY_KBD_EXCEPTION       (1)
 #define MICROPY_REPL_AUTO_INDENT    (1)
 //#define MICROPY_ASYNC_KBD_INTR      (1)
+#define MICROPY_ENABLE_SCHEDULER    (0)
 
 #define MICROPY_NLR_SETJMP          (1)
 #define MICROPY_QSTR_BYTES_IN_HASH  (1)

@@ -8,17 +8,34 @@
 #include "portmodules.h"
 #include "wiring.h"
 
+#define CHUNK_MS (10)
+
 mp_obj_t time_delay_ms(mp_obj_t ms)
 {
-	delay(mp_obj_get_int(ms));
+	int d = mp_obj_get_int(ms);
+	while (d > CHUNK_MS) {
+		delay(CHUNK_MS);
+		handle_keyboardinterrupt();
+		d -= CHUNK_MS;
+	}
+	delay(d);
 
 	return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(time_delay_ms_obj, time_delay_ms);
 
+#define CHUNK_US (10000)
+
 mp_obj_t time_delay_us(mp_obj_t us)
 {
-	delayMicroseconds(mp_obj_get_int(us));
+	int d = mp_obj_get_int(us);
+	// TODO calibration
+	while (d > CHUNK_US) {
+		delayMicroseconds(CHUNK_US);
+		handle_keyboardinterrupt();
+		d -= CHUNK_US;
+	}
+	delayMicroseconds(d);
 
 	return mp_const_none;
 }
@@ -37,5 +54,3 @@ const mp_obj_module_t mp_module_utime = {
     .base = { &mp_type_module },
     .globals = (mp_obj_dict_t*)&time_module_globals,
 };
-
-

@@ -19,14 +19,14 @@ NORETURN void mp_hal_raise(HAL_StatusTypeDef status) {
     nlr_raise(mp_obj_new_exception_arg1(&mp_type_OSError, MP_OBJ_NEW_SMALL_INT(mp_hal_status_to_errno_table[status])));
 }
 
-void mp_hal_set_interrupt_char(int c) {
-
-}
-
 int mp_hal_stdin_rx_chr(void) {
     while (! usbserial_available()) {
     }
     return usbserial_read();
+}
+
+int mp_hal_stdin_rx_chr_peek(void) {
+    return usbserial_peek();
 }
 
 void mp_hal_stdout_tx_str(const char *str) {

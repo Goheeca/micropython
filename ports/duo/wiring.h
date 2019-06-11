@@ -27,6 +27,7 @@ void mp_setup(void);
 void mp_loop(void);
 void mp_heap(void);
 
+void handle_keyboardinterrupt(void);
 
 #ifdef __cplusplus
 }

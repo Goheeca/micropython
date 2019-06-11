@@ -3,6 +3,7 @@
 #include "ticks_api.h"
 #include "pin.h"
 #include "stm32f2xx_hal_def.h"
+#include "lib/utils/interrupt_char.h"
 
 // The unique id address differs per MCU.  Ideally this define should
 // go in some MCU-specific header, but for now it lives here.
@@ -42,3 +43,5 @@ void mp_hal_set_interrupt_char(int c); // -1 to disable
 #define mp_hal_pin_low(p) GPIO_clear_pin((p)->gpio, (p)->pin_mask)
 #define mp_hal_pin_od_high(p) GPIO_set_pin((p)->gpio, (p)->pin_mask)
 #define mp_hal_pin_read(p) GPIO_read_pin((p)->gpio, (p)->pin)
+
+int mp_hal_stdin_rx_chr_peek(void);

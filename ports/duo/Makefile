@@ -83,7 +83,7 @@ HAL_INCLUDE_PATH += \
     libs/X_dynalib/inc \
     libs/X_lib \
     libs/wiring_api
-    
+
 INC += $(addprefix -I,$(HAL_INCLUDE_PATH))
 INC += -I.
 INC += -I$(ROOT)
@@ -111,7 +111,7 @@ ARCHFLAGS += -mtune=cortex-m3 -mcpu=cortex-m3 -mthumb
 # debug flags
 ifdef DEBUG
 DEBUGFLAGS += -g3 -gdwarf-2
-endif 
+endif
 
 # libs and search path
 LIBS_DEPS += -lcommunication-dynalib -lhal-dynalib -lplatform -lrt-dynalib -lservices-dynalib \
@@ -149,17 +149,17 @@ endif
 
 ifdef DEBUG
 GLOBAL_DEFINES += DEBUG
-endif            
+endif
 
 
 HAL_SOURCE_PATH += \
     libs/I_modules/duo/user-part/src
-    
+
 HAL_CPPSOURCE_PATH += \
     . \
     libs/I_modules/duo/user-part/src \
     libs/wiring_api
-    
+
 # Sources and objects
 HAL_SOURCES = $(foreach PATH,$(HAL_SOURCE_PATH),$(wildcard $(PATH)/*.c))
 HAL_CPPSOURCES = $(foreach PATH,$(HAL_CPPSOURCE_PATH),$(wildcard $(PATH)/*.cpp))
@@ -195,6 +195,7 @@ LIB_SOURCES = $(addprefix lib/,\
 	netutils/netutils.c \
 	timeutils/timeutils.c \
 	utils/pyexec.c \
+	utils/interrupt_char.c \
 	utils/sys_stdio_mphal.c \
 	)
 
@@ -376,4 +377,3 @@ $(HEADER_BUILD)/%_const.h $(BUILD)/%_qstr.h: $(CMSIS_MCU_HDR) make-stmconst.py |
 
 
 include $(ROOT)/py/mkrules.mk
-

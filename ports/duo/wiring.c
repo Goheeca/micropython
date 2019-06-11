@@ -16,11 +16,13 @@
 #include "py/builtin.h"
 #include "gccollect.h"
 #include "lib/utils/pyexec.h"
+#include "lib/utils/interrupt_char.h"
 #include "readline.h"
 #include "wiring.h"
 #include "extint.h"
 #include "TCP_server.h"
 #include "ble.h"
+
 
 static mp_obj_t result = MP_OBJ_NULL;
 const qstr UNDERSCORE = MP_QSTR__;
@@ -75,6 +77,7 @@ void mp_reset() {
     extint_init0();
     TCP_server_init0();
     ble_init0();
+    mp_hal_set_interrupt_char(CHAR_CTRL_C);
 #if MICROPY_MODULE_FROZEN
     pyexec_frozen_module("_boot.py");
     if (mp_import_stat("boot.py") == MP_IMPORT_STAT_FILE) {
@@ -182,3 +185,25 @@ void MP_WEAK __assert_func(const char *file, int line, const char *func, const c
     __fatal_error("Assertion failed");
 }
 #endif
+
+void __check_keyboardinterrupt() {
+    int peek = mp_hal_stdin_rx_chr_peek();
+    if(peek != -1) {
+        if(peek == CHAR_CTRL_C) {
+            mp_keyboard_interrupt();
+        }
+        mp_hal_stdin_rx_chr();
+    }
+}
+
+void __raise_keyboardinterrupt() {
+    if (MP_STATE_VM(mp_pending_exception) == MP_OBJ_FROM_PTR(&MP_STATE_VM(mp_kbd_exception))) {
+        MP_STATE_VM(mp_pending_exception) = MP_OBJ_NULL;
+        nlr_raise(mp_obj_new_exception(&mp_type_KeyboardInterrupt));
+    }
+}
+
+void handle_keyboardinterrupt() {
+    __check_keyboardinterrupt();
+    __raise_keyboardinterrupt();
+}
