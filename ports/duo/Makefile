@@ -202,7 +202,7 @@ LIB_SOURCES = $(addprefix lib/,\
 ifeq ($(MICROPY_FATFS), 1)
 LIB_SOURCES += \
 	lib/oofatfs/ff.c \
-	lib/oofatfs/option/unicode.c
+	lib/oofatfs/ffunicode.c
 endif
 
 MP_SOURCE = \

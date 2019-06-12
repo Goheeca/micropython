@@ -85,7 +85,7 @@ STATIC mp_obj_t TCP_server_begin(mp_obj_t self) {
 	if(server_num < MAX_SERVER_SOCKETS ) {
 
 	} else {
-		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 2£¡"));
+		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 2!"));
 	}
 
 	if(servers[server_num].server == NULL) {
@@ -113,7 +113,7 @@ STATIC mp_obj_t TCP_server_stop(mp_obj_t self) {
 	if(server_num < MAX_SERVER_SOCKETS ) {
 
 	} else {
-		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 2£¡"));
+		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 2!"));
 	}
 
 	if(servers[server_num].server == NULL) {
@@ -141,7 +141,7 @@ STATIC mp_obj_t delete_TCP_server(mp_obj_t self) {
 	if(server_num < MAX_SERVER_SOCKETS ) {
 
 	} else {
-		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 2£¡"));
+		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 2!"));
 	}
 
 	if(servers[server_num].server == NULL) {
@@ -162,7 +162,7 @@ STATIC mp_obj_t TCP_server_accept(mp_obj_t self) {
 	if(server_num < MAX_SERVER_SOCKETS ) {
 
 	} else {
-		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 2£¡"));
+		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 2!"));
 	}
 
 	if(servers[server_num].server == NULL) {
@@ -196,7 +196,7 @@ STATIC mp_obj_t TCP_server_available(mp_obj_t self, mp_obj_t client_id_in) {
 	if(client_id < MAX_CLIENT_SOCKETS ) {
 
 	} else {
-		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 9£¡"));
+		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 9!"));
 	}
 
 	return MP_OBJ_NEW_SMALL_INT(TCPClient_available(clients[client_id].client));
@@ -209,7 +209,7 @@ STATIC mp_obj_t TCP_server_write_data(mp_obj_t self, mp_obj_t client_id_in, mp_o
 	if(client_id < MAX_CLIENT_SOCKETS ) {
 
 	} else {
-		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 9£¡"));
+		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 9!"));
 	}
 
 	 return TCP_client_write_data(clients[client_id].client, buf_in);
@@ -222,7 +222,7 @@ STATIC mp_obj_t TCP_server_read_data(mp_uint_t n_args, const mp_obj_t *args) {
 	if(client_id < MAX_CLIENT_SOCKETS ) {
 
 	} else {
-		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 9£¡"));
+		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_IndentationError, "Parameter range is 0 to 9!"));
 	}
 
 	 return TCP_client_read_data(clients[client_id].client, args[2], args[3]);
