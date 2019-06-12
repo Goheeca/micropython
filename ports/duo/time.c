@@ -13,6 +13,7 @@
 mp_obj_t time_delay_ms(mp_obj_t ms)
 {
 	int d = mp_obj_get_int(ms);
+	handle_keyboardinterrupt();
 	while (d > CHUNK_MS) {
 		delay(CHUNK_MS);
 		handle_keyboardinterrupt();
@@ -30,6 +31,7 @@ mp_obj_t time_delay_us(mp_obj_t us)
 {
 	int d = mp_obj_get_int(us);
 	// TODO calibration
+	handle_keyboardinterrupt();
 	while (d > CHUNK_US) {
 		delayMicroseconds(CHUNK_US);
 		handle_keyboardinterrupt();
