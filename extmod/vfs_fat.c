@@ -43,8 +43,8 @@
 #include <stdlib.h>
 #endif
 
-#if _MAX_SS == _MIN_SS
-#define SECSIZE(fs) (_MIN_SS)
+#if FF_MAX_SS == FF_MIN_SS
+#define SECSIZE(fs) (FF_MIN_SS)
 #else
 #define SECSIZE(fs) ((fs)->ssize)
 #endif
@@ -116,14 +116,17 @@ STATIC mp_obj_t fat_vfs_mkfs(mp_obj_t bdev_in) {
 
     // make the filesystem
 #if MICROPY_VFS_FAT_HEAP_BUFFER
-    uint8_t *working_buf = (uint8_t*) malloc(_MAX_SS);
+    uint8_t *working_buf = (uint8_t*) malloc(FF_MAX_SS);
     if (!working_buf) {
         mp_raise_OSError(fresult_to_errno_table[12]); // ENOMEM
     }
 #else
-    uint8_t working_buf[_MAX_SS];
+    uint8_t working_buf[FF_MAX_SS];
 #endif
-    FRESULT res = f_mkfs(&vfs->fatfs, FM_FAT | FM_SFD, 0, working_buf, _MAX_SS);
+    FRESULT res = f_mkfs(&vfs->fatfs, FM_FAT | FM_SFD, 0, working_buf, FF_MAX_SS);
+    if (res == FR_MKFS_ABORTED) { // Probably doesn't support FAT16
+        res = f_mkfs(&vfs->fatfs, FM_FAT32, 0, working_buf, FF_MAX_SS);
+    }
 #if MICROPY_VFS_FAT_HEAP_BUFFER
     free(working_buf);
 #endif
@@ -377,7 +380,7 @@ STATIC mp_obj_t fat_vfs_statvfs(mp_obj_t vfs_in, mp_obj_t path_in) {
     t->items[6] = MP_OBJ_NEW_SMALL_INT(0); // f_ffree
     t->items[7] = MP_OBJ_NEW_SMALL_INT(0); // f_favail
     t->items[8] = MP_OBJ_NEW_SMALL_INT(0); // f_flags
-    t->items[9] = MP_OBJ_NEW_SMALL_INT(_MAX_LFN); // f_namemax
+    t->items[9] = MP_OBJ_NEW_SMALL_INT(FF_MAX_LFN); // f_namemax
 
     return MP_OBJ_FROM_PTR(t);
 }
@@ -398,14 +401,14 @@ STATIC mp_obj_t vfs_fat_mount(mp_obj_t self_in, mp_obj_t readonly, mp_obj_t mkfs
     FRESULT res = (self->flags & FSUSER_NO_FILESYSTEM) ? FR_NO_FILESYSTEM : FR_OK;
     if (res == FR_NO_FILESYSTEM && mp_obj_is_true(mkfs)) {
 #if MICROPY_VFS_FAT_HEAP_BUFFER
-        uint8_t *working_buf = (uint8_t*) malloc(_MAX_SS);
+        uint8_t *working_buf = (uint8_t*) malloc(FF_MAX_SS);
         if (!working_buf) {
             mp_raise_OSError(fresult_to_errno_table[12]); // ENOMEM
         }
 #else
-        uint8_t working_buf[_MAX_SS];
+        uint8_t working_buf[FF_MAX_SS];
 #endif
-        res = f_mkfs(&self->fatfs, FM_FAT | FM_SFD, 0, working_buf, _MAX_SS);
+        res = f_mkfs(&self->fatfs, FM_FAT | FM_SFD, 0, working_buf, FF_MAX_SS);
 #if MICROPY_VFS_FAT_HEAP_BUFFER
         free(working_buf);
 #endif
