@@ -200,9 +200,10 @@ LIB_SOURCES = $(addprefix lib/,\
 	)
 
 ifeq ($(MICROPY_FATFS), 1)
-LIB_SOURCES += \
-	lib/oofatfs/ff.c \
-	lib/oofatfs/ffunicode.c
+LIB_SOURCES += $(addprefix lib/oofatfs/,\
+	ff.c \
+	ffunicode.c \
+	)
 endif
 
 MP_SOURCE = \
@@ -233,12 +234,12 @@ SRC_O = \
 	gchelper_m0.o
 
 OBJ += $(PY_O)
-OBJ += $(addprefix $(BUILD)/, $(SRC_O))
+OBJ += $(addprefix $(BUILD)/,$(SRC_O))
 OBJ += $(addprefix $(BUILD)/,$(HAL_SOURCES:.c=.o))
 OBJ += $(addprefix $(BUILD)/,$(HAL_CPPSOURCES:.cpp=.cpp.o))
 OBJ += $(addprefix $(BUILD)/,$(LIB_SOURCES:.c=.o))
 OBJ += $(addprefix $(BUILD)/,$(MP_SOURCE:.c=.o))
-OBJ += $(addprefix $(BUILD)/, $(SRC_MOD:.c=.o))
+OBJ += $(addprefix $(BUILD)/,$(SRC_MOD:.c=.o))
 OBJ += $(BUILD)/pins.o
 
 # Dependencies

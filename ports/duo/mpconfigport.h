@@ -59,9 +59,10 @@
 #define MICROPY_PY_UHEAPQ           (1)
 #define MICROPY_PY_UTIMEQ           (1)
 #define MICROPY_PY_UHASHLIB         (1)
-#define MICROPY_PY_UHASHLIB_MD5     (1)
+#define MICROPY_PY_UHASHLIB_MD5     (0)
 #define MICROPY_PY_USSL             (0)
-#define MICROPY_SSL_AXTLS    (0)
+#define MICROPY_SSL_AXTLS           (0)
+#define MICROPY_SSL_MBEDTLS         (0)
 #if MICROPY_PY_USSL
 #define MICROPY_PY_UHASHLIB_SHA1    (1)
 #define MICROPY_PY_UCRYPTOLIB       (1)
@@ -122,7 +123,7 @@
 #define MICROPY_FATFS_ENABLE_LFN       (1)
 #define MICROPY_FATFS_RPATH            (2)
 #define MICROPY_FATFS_MAX_SS           (4096)
-#define MICROPY_FATFS_LFN_CODE_PAGE    (437) /* 1=SFN/ANSI 437=LFN/U.S.(OEM) */
+#define MICROPY_FATFS_LFN_CODE_PAGE    437 /* 1=SFN/ANSI 437=LFN/U.S.(OEM) */
 #define MICROPY_VFS_FAT                (1)
 #define MICROPY_VFS_FAT_HEAP_BUFFER    (1)
 #define MICROPY_FATFS_MULTI_PARTITION  (0)
