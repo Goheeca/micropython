@@ -1,8 +1,7 @@
 import gc
 gc.threshold((gc.mem_free() + gc.mem_alloc()) // 4)
 import uos
-from flashstorage import flashStorage
-#from ramstorage import RAMStorage
+from _flashstorage import flashStorage
 
 try:
     if flashStorage:
@@ -14,11 +13,11 @@ except OSError:
     uos.mount(vfs, '/')
     with open("boot.py", "w") as f:
         f.write("""\
-#This file is executed on every boot
+# boot.py -- runs after the device boots up
 """)
     with open("main.py", "w") as f:
         f.write("""\
-#This file is executed on every boot in friendly repl mode
+# main.py -- put your code here!
 """)
 
 gc.collect()

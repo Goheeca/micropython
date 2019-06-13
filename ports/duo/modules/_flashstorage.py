@@ -10,28 +10,13 @@ class FlashStorage:
         self.blocks = blocks
 
     def readblocks(self, n, buf):
-        #print("readblocks(%s, %x(%d))" % (n, id(buf), len(buf)))
-        #if n == 0:
-        #    buf2 = bytearray(self.SEC_SIZE)
-        #    self.mk_fake_mbr(buf2)
-        #    buf[:] = buf2
-        #else:
-        #    spark.sFlash.read((n - 1 + self.START_SEC) * self.SEC_SIZE, buf)
         spark.sFlash.read((n + self.START_SEC) * self.SEC_SIZE, buf)
 
     def writeblocks(self, n, buf):
-        #print("writeblocks(%s, %x(%d))" % (n, id(buf), len(buf)))
-        #assert len(buf) <= self.SEC_SIZE, len(buf)
-        #if n == 0:
-        #    pass # Nothing we won't change first sector with MBR
-        #else:
-        #    spark.sFlash.erase(n - 1 + self.START_SEC)
-        #    spark.sFlash.write((n - 1 + self.START_SEC) * self.SEC_SIZE, buf)
         spark.sFlash.erase((n + self.START_SEC) * self.SEC_SIZE)
         spark.sFlash.write((n + self.START_SEC) * self.SEC_SIZE, buf)
 
     def ioctl(self, op, arg):
-        #print("ioctl(%d, %r)" % (op, arg))
         if op == 4:  # BP_IOCTL_SEC_COUNT
             return self.blocks
         if op == 5:  # BP_IOCTL_SEC_SIZE
@@ -58,8 +43,6 @@ class FlashStorage:
         buf[15+pos] = num_blocks >> 24
 
     def mk_fake_mbr(self, buf):
-        #for i in range(446):
-        #    buf[i] = 0
         self.mk_partition_info(buf, 446, 0, 0x01, self.START_SEC + 1, self.NUM_BLK - 1)
         self.mk_partition_info(buf, 462, 0, 0, 0, 0)
         self.mk_partition_info(buf, 478, 0, 0, 0, 0)
