@@ -1,6 +1,8 @@
 import uos
 import ucollections
 import ubinascii
+import ujson
+import sys
 
 class AnsiEscaper(object):
     class Color(object):
@@ -40,6 +42,8 @@ ansiEscaper = AnsiEscaper()
 
 FILE = 0x8000
 DIR = 0x4000
+BASE64_BLOCK = 3*128
+CRC_BLOCK = 1024
 
 def is_type(path, type):
     if path.endswith('/'):
@@ -93,7 +97,11 @@ def file_size(file):
 
 def file_checksum(file):
     with open(file, 'r') as f:
-        return ubinascii.crc32('\n'.join(f.readlines()))
+        size = file_size(file)
+        crc32 = 0
+        while f.tell() != size:
+            crc32 = ubinascii.crc32(f.read(CRC_BLOCK), crc32)
+        return crc32
 
 class Walker(object):
     def __init__(self, indent=4):
@@ -158,6 +166,15 @@ def tree(path='/', ordered=True, stat=file_size, checksum=file_checksum):
 
 walk = Walker(indent=4)
 
+def fsstat():
+    stat = uos.statvfs('/')
+    return {
+        'block_size': stat[0],
+        'blocks': stat[2],
+        'free_blocks': stat[3],
+        'max_file_length': stat[9]
+    }
+
 def print_file(filepath):
     with open(filepath, 'r') as f:
         for line in f:
@@ -172,3 +189,58 @@ def input_file(filepath):
                 f.write(line + '\n')
         except EOFError:
             pass
+
+def print_base64_file(filepath):
+    with open(filepath, 'r') as f:
+        size = file_size(filepath)
+        while f.tell() != size:
+            block = f.read(BASE64_BLOCK)
+            print(str(ubinascii.b2a_base64(block))[2:-3], end='')
+        print()
+
+def input_base64_file(filepath):
+    with open(filepath, 'w') as f:
+        i = 0
+        buf = '\x00\x00\x00\x00'
+        while True:
+            c = sys.stdin.read(1)
+            sys.stdout.write(c)
+            buf[i] = c
+            i = (i + 1) % 4
+            if not ('A' <= c <= 'Z' or 'a' <= c <= 'z' or '0' <= c <= '9' or c == '+' or c == '/' or c == '='):
+                break
+            f.write(ubinascii.a2b_base64(buf))
+            if buf[3] == '=':
+                break
+
+def sync():
+    actions = {
+        'STAT': lambda _: ujson.dumps(fsstat()),
+        'INFO': lambda path: ujson.dumps(tree(path, ordered=False)),
+        'CREATE': touch,
+        'REMOVE': remove,
+        'EDIT': input_file,
+        'SHOW': print_file,
+        'BINEDIT': input_base64_file,
+        'BINSHOW': print_base64_file
+    }
+    try:
+        while True:
+            try:
+                action = input('ACTION ')
+                if action in {'STAT'}:
+                    action += ' '
+                cut = action.find(' ')
+                if cut == -1:
+                    raise ValueError
+                type_, arg_str = action[:cut], action[cut+1:]
+                result = actions[type_](arg_str)
+                if result:
+                    print(result)
+                print('\x00OK')
+            except Exception as e:
+                if isinstance(e, EOFError):
+                    raise EOFError
+                print('\x00KO')
+    except EOFError:
+        print('\x00OK')
