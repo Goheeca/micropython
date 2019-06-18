@@ -181,8 +181,8 @@ def print_file(filepath):
             print(line, end='')
         print('\x00', end='')
 
-def input_file(filepath):
-    with open(filepath, 'w') as f:
+def input_file(filepath, append=False):
+    with open(filepath, 'a' if append else 'w') as f:
         try:
             while True:
                 line = input()
@@ -198,18 +198,21 @@ def print_base64_file(filepath):
             print(str(ubinascii.b2a_base64(block))[2:-3], end='')
         print()
 
-def input_base64_file(filepath):
-    with open(filepath, 'w') as f:
+def input_base64_file(filepath, append=False):
+    with open(filepath, 'a' if append else 'w') as f:
         i = 0
-        buf = '\x00\x00\x00\x00'
+        buf = bytearray(4)
         while True:
             c = sys.stdin.read(1)
             sys.stdout.write(c)
-            buf[i] = c
+            if c in '\r\n\t ':
+                continue
+            buf[i] = ord(c)
             i = (i + 1) % 4
             if not ('A' <= c <= 'Z' or 'a' <= c <= 'z' or '0' <= c <= '9' or c == '+' or c == '/' or c == '='):
                 break
-            f.write(ubinascii.a2b_base64(buf))
+            if i == 0:
+                f.write(ubinascii.a2b_base64(bytes(buf)))
             if buf[3] == '=':
                 break
 
@@ -222,7 +225,9 @@ def sync():
         'EDIT': input_file,
         'SHOW': print_file,
         'BINEDIT': input_base64_file,
-        'BINSHOW': print_base64_file
+        'BINSHOW': print_base64_file,
+        'APPEND': lambda path: input_file(path, append=True),
+        'BINAPPEND': lambda path: input_base64_file(path, append=True)
     }
     try:
         while True:
