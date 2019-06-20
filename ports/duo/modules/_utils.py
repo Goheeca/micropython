@@ -42,7 +42,8 @@ ansiEscaper = AnsiEscaper()
 
 FILE = 0x8000
 DIR = 0x4000
-BASE64_BLOCK = 3*128
+BASE64_ARMORED_BLOCK = 3*128
+BASE64_BINARY_BLOCK = 256
 CRC_BLOCK = 1024
 
 def is_type(path, type):
@@ -186,35 +187,36 @@ def input_file(filepath, append=False):
         try:
             while True:
                 line = input()
-                f.write(line + '\n')
+                f.write(line + '\r\n')
         except EOFError:
             pass
 
 def print_base64_file(filepath):
-    with open(filepath, 'r') as f:
+    with open(filepath, 'rb') as f:
         size = file_size(filepath)
         while f.tell() != size:
-            block = f.read(BASE64_BLOCK)
-            print(str(ubinascii.b2a_base64(block))[2:-3], end='')
-        print()
+            block = f.read(BASE64_ARMORED_BLOCK)
+            sys.stdout.write(ubinascii.b2a_base64(block))
+        sys.stdout.write(b'\x04')
 
 def input_base64_file(filepath, append=False):
-    with open(filepath, 'a' if append else 'w') as f:
+    with open(filepath, 'ab' if append else 'wb') as f:
         i = 0
-        buf = bytearray(4)
+        buf = bytearray(BASE64_BINARY_BLOCK)
+        c = bytearray(1)
         while True:
-            c = sys.stdin.read(1)
+            sys.stdin.readinto(c)
             sys.stdout.write(c)
-            if c in '\r\n\t ':
+            if c in b'\r\n\t ':
                 continue
-            buf[i] = ord(c)
-            i = (i + 1) % 4
-            if not ('A' <= c <= 'Z' or 'a' <= c <= 'z' or '0' <= c <= '9' or c == '+' or c == '/' or c == '='):
-                break
-            if i == 0:
+            if not (ord(b'A') <= c[0] <= ord(b'Z') or ord(b'a') <= c[0] <= ord(b'z') or ord(b'0') <= c[0] <= ord(b'9') or c in b'+/='):
+                buf = buf[0:i]
                 f.write(ubinascii.a2b_base64(bytes(buf)))
-            if buf[3] == '=':
                 break
+            buf[i] = c[0]
+            i = (i + 1) % BASE64_BINARY_BLOCK
+            if i == BASE64_BINARY_BLOCK:
+                f.write(ubinascii.a2b_base64(bytes(buf)))
 
 def sync():
     actions = {
