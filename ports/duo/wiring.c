@@ -22,6 +22,7 @@
 #include "extint.h"
 #include "TCP_server.h"
 #include "ble.h"
+#include "flash.h"
 
 
 static mp_obj_t result = MP_OBJ_NULL;
@@ -100,6 +101,11 @@ void soft_reset(void) {
 #if MICROPY_REPL_EVENT_DRIVEN
     pyexec_event_repl_init();
 #endif
+}
+
+void clear_filesystem(void) {
+    mp_hal_stdout_tx_str("!!! Clearing filesystem\r\n");
+    sFLASH_eraseSector(0);
 }
 
 void mp_setup() {

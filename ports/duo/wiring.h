@@ -27,6 +27,8 @@ void mp_setup(void);
 void mp_loop(void);
 void mp_heap(void);
 
+void clear_filesystem(void);
+void soft_reset(void);
 void handle_keyboardinterrupt(void);
 
 #ifdef __cplusplus
